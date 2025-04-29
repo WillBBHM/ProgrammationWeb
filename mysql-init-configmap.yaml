@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS bateau;
+    USE bateau;
+    
+    CREATE TABLE IF NOT EXISTS bateau_liste (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nom_bateau VARCHAR(100) NOT NULL,
+        imageUrl VARCHAR(255) NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        category VARCHAR(50) NOT NULL,
+        location VARCHAR(50) NOT NULL,
+        capacity INT NOT NULL,
+        length DECIMAL(5, 1) NOT NULL,
+        year INT NOT NULL,
+        motorPower VARCHAR(50),
+        description TEXT,
+        features TEXT,
+        disponibilite BOOLEAN DEFAULT TRUE
+    );
+
+    
+    CREATE TABLE IF NOT EXISTS reservation (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        boatId INT NOT NULL,
+        startDate DATE NOT NULL,
+        endDate DATE NOT NULL,
+        fullName VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        totalPrice DECIMAL(10, 2) NOT NULL,
+        status ENUM('pending', 'confirmed', 'cancelled') NOT NULL DEFAULT 'pending',
+        date_demande DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (boatId) REFERENCES bateau_liste(id)
+    );
+
+    
+    CREATE TABLE IF NOT EXISTS login (
+        username VARCHAR(50) PRIMARY KEY,
+        mot_de_passe VARCHAR(50) NOT NULL
+    );
+    
+    INSERT INTO bateau_liste (nom_bateau, imageUrl, price, category, location, capacity, length, year, motorPower, description, features, disponibilite) VALUES
+    ('Azure Voyager', 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 650.00, 'Yacht', 'Marseille', 8, 15.5, 2020, '250 CV', 'L''Azure Voyager est un yacht de luxe parfait pour vos croisieres en Mediterranee. Profitez d''un confort exceptionnel et d''equipements haut de gamme pour une experience inoubliable en mer.', 'Cuisine equipee,Douche,Pont solarium,Systeme audio,Climatisation,Equipement de peche,Wi-Fi', TRUE),
+    ('Ocean Breeze', 'https://images.unsplash.com/photo-1581271164789-7c97932822d3?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2F0YW1hcmFufGVufDB8fDB8fHww', 480.00, 'Catamaran', 'Nice', 12, 12.8, 2021, '2 x 115 CV', 'Ce catamaran spacieux offre une stabilite exceptionnelle et des espaces de vie genereux. Ideal pour les sorties en groupe ou les fetes en mer.', 'Plateforme de baignade,Cabines privees,Cuisine exterieure,Glaciere,Bain de soleil,Douche exterieure', TRUE),
+    ('Petit Marin', 'https://images.unsplash.com/photo-1508094902356-db488e227d75?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 280.00, 'Voilier', 'Cannes', 6, 10.2, 2018, NULL, 'Un voilier elegant et maniable, parfait pour les amateurs de navigation traditionnelle. Ideal pour decouvrir les joies de la voile.', 'Voile principale,Genois,Cabine double,Cuisine basique,WC marin,Materiel de securite', TRUE),
+    ('Rapide Wave', 'https://images.unsplash.com/photo-1562281302-809108fd533c?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fHw%3D', 390.00, 'Bateau a moteur', 'Saint-Tropez', 5, 8.5, 2022, '320 CV', 'Un bateau a moteur puissant pour des sensations fortes. Sa vitesse impressionnante vous permettra de parcourir rapidement les cotes mediterraneennes.', 'Moteur haute performance,Sieges sport,Bain de soleil arriere,Echelle de bain,Radio marine,GPS', TRUE),
+    ('Classic Pearl', 'https://images.unsplash.com/photo-1621277224630-81d9af65e40c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 520.00, 'Yacht', 'Antibes', 7, 14.0, 1985, '180 CV', 'Un yacht restaure avec gout, alliant le charme d''antan au confort moderne. Parfait pour les amateurs d''elegance nautique.', 'Boiseries d''epoque,Salon luxueux,Cabines confortables,Pont en teck,Equipement de peche,Annexe', TRUE),
+    ('Family Explorer', 'https://images.unsplash.com/photo-1720445821834-1db9c765cb82?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIzfHx8ZW58MHx8fHx8', 350.00, 'Peniche', 'Toulon', 10, 16.0, 2019, '90 CV', 'Une peniche spacieuse ideale pour les familles ou les groupes d''amis. Parfaite pour des vacances paisibles sur l''eau avec tout le confort necessaire.', 'Grande terrasse,Barbecue,Chambres multiples,Salon spacieux,TV satellite,Cuisine complete,Wi-Fi', TRUE);
+    
+    INSERT IGNORE INTO login (username, mot_de_passe) VALUES
+    ('admin', 'admin'),
+    ('toto', '1234');

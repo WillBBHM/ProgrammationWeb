@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: boat-gateway
+spec:
+  selector:
+    istio: ingressgateway # Utilise le ingressgateway par défaut d'Istio
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*" # Accepte tout hôte (peut être restreint à un domaine spécifique)

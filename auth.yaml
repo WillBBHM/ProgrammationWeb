@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: dragoneffect/auth-service:lastest
+        ports:
+        - containerPort: 3003
+          name: http
+        env:
+        # Configuration de la base de données
+        - name: PORT
+          value: "3003"
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "bateau"
+        - name: DB_USER
+          value: "root"
+        # --- ATTENTION : Mot de passe en clair ci-dessous ---
+        - name: DB_PASSWORD
+          value: "root" # Mot de passe défini directement
+        # --- FIN ATTENTION ---
+        # Les sections 'resources', 'readinessProbe', et 'livenessProbe' ont été retirées.
+
+---
+# Fichier: auth-service.yaml
+# Définit le service Kubernetes (identique)
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  type: ClusterIP
+  selector:
+    app: auth-service
+  ports:
+  - protocol: TCP
+    port: 3003
+    targetPort: 3003
+    name: http
